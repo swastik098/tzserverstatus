@@ -62,7 +62,7 @@ function App() {
           <div className="clock-refresh">
             <div id="digitalClock" className="digital-clock"></div>
             <button onClick={fetchServerStatus} className="refresh-button">
-              <i className="fa fa-refresh"></i> Refresh
+              <i className="fa fa-refresh">Refresh</i>
             </button>
           </div>
         </div>
@@ -86,7 +86,9 @@ function App() {
                   <span className="data">{server.name}</span>
                 </li>
                 <li>
-                  <span className="data signal">
+                  <span
+                    className={`data ${server.status ? "online" : "offline"}`}
+                  >
                     {server.status ? "ONLINE" : "OFFLINE"}
                   </span>
                 </li>
