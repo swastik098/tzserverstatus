@@ -112,10 +112,11 @@ h1 {
   margin: 5px 0;
 }
 
-.server.has-failed {
+/* .server.has-failed {
   background-color: #f8d7da;
   border-color: #f5c6cb;
-}
+} */
+
 .server-details .data.online {
   color: #32cd32; /* Green text color for online status */
 }
