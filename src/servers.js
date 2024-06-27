@@ -19,4 +19,9 @@ export const servers = [
     adr: "https://tatvagyan.in/",
     icon: "fa fa-server",
   },
+  {
+    name: "Cron Server",
+    adr: " http://74.235.192.244/tz",
+    icon: "fa fa-tasks",
+  },
 ];
