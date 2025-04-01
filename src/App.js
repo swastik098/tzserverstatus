@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import "./App.css";
 import { servers } from "./servers";
 
 function App() {
@@ -8,23 +7,17 @@ function App() {
 
   const fetchServerStatus = async () => {
     setLoading(true);
-
-    const statusResults = [];
-    for (let server of servers) {
-      try {
-        const response = await fetch(server.adr);
-        statusResults.push({ url: server.adr, status: response.status });
-      } catch (error) {
-        statusResults.push({ url: server.adr, error: error.message });
-      }
-    }
-
-    const updatedServers = servers.map((server, index) => ({
-      ...server,
-      status: statusResults[index].status === 200,
-    }));
-
-    setServerStatus(updatedServers);
+    const statusResults = await Promise.all(
+      servers.map(async (server) => {
+        try {
+          const response = await fetch(server.adr);
+          return { ...server, status: response.status === 200 };
+        } catch (error) {
+          return { ...server, status: false };
+        }
+      })
+    );
+    setServerStatus(statusResults);
     setLoading(false);
   };
 
@@ -34,68 +27,112 @@ function App() {
 
   useEffect(() => {
     const updateClock = () => {
-      const now = new Date();
-      const hours = String(now.getHours()).padStart(2, "0");
-      const minutes = String(now.getMinutes()).padStart(2, "0");
-      const seconds = String(now.getSeconds()).padStart(2, "0");
+      const now = new Date().toLocaleTimeString();
       const digitalClock = document.getElementById("digitalClock");
-      if (digitalClock) {
-        digitalClock.textContent = `${hours}:${minutes}:${seconds}`;
-      }
+      if (digitalClock) digitalClock.textContent = now;
     };
-
     updateClock();
     const clockInterval = setInterval(updateClock, 1000);
     return () => clearInterval(clockInterval);
   }, []);
 
-  const getDomain = (url) => {
-    const hostname = new URL(url).hostname;
-    return hostname;
-  };
+  const getDomain = (url) => new URL(url).hostname;
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <div className="header-content">
-          <h1>Thinkzone Server Status</h1>
-          <div className="clock-refresh">
-            <div id="digitalClock" className="digital-clock"></div>
-            <button onClick={fetchServerStatus} className="refresh-button">
-              <i className="fa fa-refresh">Refresh</i>
-            </button>
-          </div>
+    <div
+      style={{
+        textAlign: "center",
+        fontFamily: "Arial, sans-serif",
+        backgroundColor: "#f4f4f9",
+        minHeight: "100vh",
+        padding: "20px",
+      }}
+    >
+      <header
+        style={{
+          backgroundColor: "#282c34",
+          padding: "20px",
+          color: "white",
+          borderRadius: "10px",
+          marginBottom: "20px",
+        }}
+      >
+        <h1>Thinkzone Server's Status</h1>
+        <div>
+          <span
+            id="digitalClock"
+            style={{ fontSize: "20px", marginRight: "10px" }}
+          ></span>
+          <button
+            onClick={fetchServerStatus}
+            style={{
+              padding: "10px 20px",
+              backgroundColor: "#61dafb",
+              border: "none",
+              cursor: "pointer",
+              borderRadius: "5px",
+              fontSize: "16px",
+              transition: "0.3s ease-in-out",
+              boxShadow: "2px 2px 10px rgba(0,0,0,0.2)",
+            }}
+          >
+            Refresh
+          </button>
         </div>
       </header>
       {loading ? (
-        <div className="loader-container">
-          <div className="loader"></div>
+        <div
+          style={{
+            padding: "50px",
+            fontSize: "20px",
+            fontWeight: "bold",
+            color: "#333",
+          }}
+        >
+          Loading...
         </div>
       ) : (
-        <div id="serverList" className="server-list">
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
+            gap: "20px",
+            padding: "20px",
+          }}
+        >
           {serverStatus.map((server) => (
             <div
               key={server.adr}
-              className={`server ${server.status ? "" : "has-failed"}`}
+              style={{
+                border: "1px solid #ddd",
+                borderRadius: "10px",
+                padding: "20px",
+                textAlign: "center",
+                backgroundColor: server.status ? "#d4edda" : "#f8d7da",
+                transition: "0.3s ease-in-out",
+                boxShadow: "2px 2px 10px rgba(0,0,0,0.2)",
+              }}
             >
-              <span className="server-icon">
-                <i className={server.icon}></i>
-              </span>
-              <ul className="server-details">
-                <li>
-                  <span className="data">{server.name}</span>
-                </li>
-                <li>
-                  <span
-                    className={`data ${server.status ? "online" : "offline"}`}
-                  >
-                    {server.status ? "ONLINE" : "OFFLINE"}
-                  </span>
-                </li>
-                <li>
-                  <span className="data">{getDomain(server.adr)}</span>
-                </li>
-              </ul>
+              <div>
+                <i
+                  className={server.icon}
+                  style={{ fontSize: "28px", marginBottom: "10px" }}
+                ></i>
+              </div>
+              <h3 style={{ marginBottom: "5px" }}>{server.name}</h3>
+              <p
+                style={{
+                  fontWeight: "bold",
+                  fontSize: "18px",
+                  color: server.status ? "green" : "red",
+                  marginBottom: "5px",
+                }}
+              >
+                {server.status ? "ONLINE" : "OFFLINE"}
+              </p>
+              <p style={{ fontSize: "14px", color: "#555" }}>
+                {getDomain(server.adr)}
+              </p>
             </div>
           ))}
         </div>

@@ -1,27 +1,32 @@
 export const servers = [
   {
-    name: "Thinkzone(Production)",
-    adr: "https://thinkzone.co/thinkzone",
+    name: "Thinkzone (Production)",
+    adr: "https://thinkzone.co",
     icon: "fa fa-globe",
   },
   {
-    name: "Prakashak(Production)",
-    adr: "https://tatvagyan.co.in/",
+    name: "Prakashak (Production)",
+    adr: "https://thinkzone.co.in",
     icon: "fa fa-globe",
   },
   {
-    name: "Thinkzone(Test)",
-    adr: "https://thinkzone.in.net/thinkzone",
+    name: "WhatsApp Automation (Production)",
+    adr: "https://thinkzone.org",
+    icon: "fa fa-cogs",
+  },
+  {
+    name: "Thinkzone (Test)",
+    adr: "https://tatvagyan.in",
     icon: "fa fa-server",
   },
   {
-    name: "Prakashak(Test)",
-    adr: "https://tatvagyan.in/",
+    name: "Prakashak (Test)",
+    adr: "https://tatvagyan.co.in",
     icon: "fa fa-server",
   },
   {
-    name: "Cron /Notification Server",
-    adr: " http://74.235.192.244/tz",
-    icon: "fa fa-tasks",
+    name: "WhatsApp Automation (Test)",
+    adr: "https://tatvagyan.org",
+    icon: "fa fa-cogs",
   },
 ];
